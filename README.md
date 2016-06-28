@@ -11,7 +11,7 @@ This fork aims to allow back in forth between an ipynb jupyter/ipython notebook 
 *Adaptations*
 
 - Using pycharm style since it seems to correspond to the notebook export style
-- Allow raw cell content to be formatted as Markdown
+- Make Python3 friendly
 
 ## Prerequisites
 
