@@ -11,7 +11,7 @@ This fork aims to allow back in forth between an ipynb jupyter/ipython notebook 
 *Adaptations*
 
 - Using pycharm style since it seems to correspond to the notebook export style
-- Allow raw cell content to be formatted as markdown
+- Allow raw cell content to be formatted as Markdown
 
 ## Prerequisites
 
@@ -25,7 +25,7 @@ $ python3 py2ipynb.py from-notebook.py to-notebook.ipynb
 
 ### Caveats
 
-Unfortunately, the out-of-the-box Jupyter converter to .py does not deliminates markdown cells, it just puts the markdown in comments. Doing so, we don't know when a code cell ends and a markdown cell begins. If we do want to restore markdown properly, this suggests we should develop a custom exporter. The project is [nbconvert](https://github.com/jupyter/nbconvert). The current [Jinja](http://jinja.pocoo.org/) template file is [python.tpl](https://github.com/jupyter/nbconvert/blob/master/nbconvert/templates/python.tpl). The template and/or code must be modified to suit the markdown cell marker like so:
+Unfortunately, the out-of-the-box Jupyter converter to .py does not deliminate Markdown cells, it just puts the Markdown in comments. Doing so, we don't know when a code cell ends and a Markdown cell begins. If we do want to restore Markdown properly, this suggests we should develop a custom exporter. The project is [nbconvert](https://github.com/jupyter/nbconvert). The current [Jinja](http://jinja.pocoo.org/) template file is [python.tpl](https://github.com/jupyter/nbconvert/blob/master/nbconvert/templates/python.tpl). The template and/or code must be modified to suit the Markdown cell marker like so:
 
 ```python
 ##
