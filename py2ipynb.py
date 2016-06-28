@@ -12,26 +12,23 @@ import codecs
 from os import linesep
 
 
-CELLMARKS = {"pycharm": "##",
-             "spyder": "#%%"}
+CELLMARKS = "##"
 
-
-def parsePy(py_filename, cellmark_style, other_ignores=[]):
+def parsePy(py_filename, other_ignores=[]):
     """Converts a .py file to a V.4 .ipynb notebook using special cell markers.
 
     :param py_filename: .py filename
-    :param cellmark_style: Determines cell marker based on IDE, {"pycharm": "##", "spyder": "#%%"}
     :param other_ignores: Other lines to ignore
     :return: A string containing one or more lines
     """
-    ignores = ['"""', "'''"] + CELLMARKS.values() + other_ignores
+    ignores = ['"""', "'''", CELLMARKS] + other_ignores
     with open(py_filename, "r") as f:
         lines = []
         codecell = True
         metadata = {"slideshow": {"slide_type": "slide"}}
         for l in f:
             l1 = l.strip()
-            if lines and ((l1.startswith('# In[') and l1.endswith(']:')) or l1 == CELLMARKS[cellmark_style]):
+            if lines and ((l1.startswith('# In[') and l1.endswith(']:')) or l1 == CELLMARKS):
                 yield (codecell, metadata, "".join(lines).strip(linesep))
                 lines = []
                 codecell = True
@@ -57,17 +54,16 @@ def parsePy(py_filename, cellmark_style, other_ignores=[]):
         if lines:
             yield (codecell, metadata, "".join(lines).strip(linesep))
 
-def py2ipynb(input, output, cellmark_style, other_ignores=[]):
+def py2ipynb(input, output, other_ignores=[]):
     """Converts a .py file to a V.4 .ipynb notebook usiing `parsePy` function
 
     :param input: Input .py filename
     :param output: Output .ipynb filename
-    :param cellmark_style: Determines cell marker based on IDE, see parsePy documentation for values
     :param other_ignores: Other lines to ignore
     """
     # Create the code cells by parsing the file in input
     cells = []
-    for c in parsePy(input, cellmark_style, other_ignores):
+    for c in parsePy(input, other_ignores):
         codecell, metadata, code = c
         cell = new_code_cell(source=code, metadata=metadata) if codecell else new_markdown_cell(source=code, metadata=metadata)
         cells.append(cell)
@@ -100,18 +96,8 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument("input", help="input python file")
     parser.add_argument("output", help="output notebook file")
-    cellmark_style_arg = parser.add_argument("-c", "--cellmark-style", default="default",
-                        help="default|pycharm|spyder (pycharm)")
     args = parser.parse_args()
 
-    cellmark_style_options = ("default", "pycharm", "spyder")
-    if args.cellmark_style not in cellmark_style_options:
-        raise argparse.ArgumentError(cellmark_style_arg,
-                                     "invalid value, can only be one of "+ str(cellmark_style_options))
-
-    if args.cellmark_style == "default":
-        py2ipynb_default(args.input, args.output)
-    else:
-        py2ipynb(args.input, args.output, args.cellmark_style,
-                 ["# ----------------------------------------------------------------------------"])
+    py2ipynb(args.input, args.output,
+             ["# ----------------------------------------------------------------------------"])
 

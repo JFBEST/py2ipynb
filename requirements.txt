@@ -1,0 +1,2 @@
+ipython==4.2.0
+nbformat==4.0.1
